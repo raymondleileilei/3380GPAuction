@@ -1,0 +1,41 @@
+[
+        {
+            "_id": "66aaae92ecc3cab21f49b10a",
+            "itemid": 1,
+            "itemName": "Phone",
+            "itemStartingPrice": 50,
+            "itemDescription": "an iPhone",
+            "itemImg": "image1.jpg",
+            "itemBidPrice": 50,
+            "itemStartTime": "2024-08-01T12:00:00.000Z",
+            "itemEndTime": "2024-08-02T12:30:00.000Z",
+            "SellerName": "Raymond",
+            "BuyerName": ""
+        },
+        {
+            "_id": "66aaaebbecc3cab21f49b10c",
+            "itemid": 2,
+            "itemName": "Phone",
+            "itemStartingPrice": 70,
+            "itemDescription": "an iPhone 2",
+            "itemImg": "image2.jpg",
+            "itemBidPrice": 70,
+            "itemStartTime": "2024-08-01T12:00:00.000Z",
+            "itemEndTime": "2024-08-02T13:30:00.000Z",
+            "SellerName": "Joe",
+            "BuyerName": ""
+        },
+        {
+            "_id": "66aaaed3ecc3cab21f49b10e",
+            "itemid": 3,
+            "itemName": "Keyboard",
+            "itemStartingPrice": 60,
+            "itemDescription": "a keyboard",
+            "itemImg": "image3.jpeg",
+            "itemBidPrice": 60,
+            "itemStartTime": "2024-08-02T12:00:00.000Z",
+            "itemEndTime": "2024-08-05T05:40:00.000Z",
+            "SellerName": "Man",
+            "BuyerName": ""
+        }
+    ]
