@@ -48,7 +48,7 @@ mongoose.connect('mongodb://localhost:27017/3380itemdb')
             .then(() => {
                 // Start your Express server once connected to MongoDB
                 app.listen(port, () => {
-                    console.log(`Server is running on port ${port}`);
+                    console.log(`Backend is running on port ${port}`);
                 });
             })
             .catch(err => {
