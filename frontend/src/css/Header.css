@@ -1,0 +1,7 @@
+.title {
+    display: flex;
+    align-items: center;
+    font-size: 42px;
+    border-radius: 15px;
+    margin-bottom: 60px;
+}
