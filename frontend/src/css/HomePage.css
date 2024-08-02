@@ -30,3 +30,9 @@
     display: flex;
     font-size: 30px;
 }
+
+.header-items {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
