@@ -6,35 +6,35 @@ import { useNavigate } from 'react-router-dom';
 function AddItem() {
 
     const [itemName, setItemName] = useState('');
-  const [itemDescription, setItemDescription] = useState('');
-  const [itemStartingPrice, setItemStartingPrice] = useState('');
-  const [sellerName, setSellerName] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+    const [itemDescription, setItemDescription] = useState('');
+    const [itemStartingPrice, setItemStartingPrice] = useState('');
+    const [sellerName, setSellerName] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const navigate = useNavigate();
 
-  const postItem = (e) => {
-    e.preventDefault();
+    const postItem = (e) => {
+        e.preventDefault();
 
-    const newItem = {
-        itemName,
-        itemDescription,
-        itemStartingPrice,
-        sellerName,
-        itemImg: "noimg.jpg"
-      };
-      axios.post('http://localhost:5001/api/additem', newItem)
-      .then(response => {
-        console.log('Item posted:', response.data);
-        navigate('/'); // Redirect after successful post
-      })
-      .catch(error => {
-        console.error('There was an error posting the item!', error);
-        setErrorMessage('Please fill in all the fields.')
-      });
-  };
+        const newItem = {
+            itemName,
+            itemDescription,
+            itemStartingPrice,
+            sellerName,
+            itemImg: "noimg.jpg"
+        };
+        axios.post('http://localhost:5001/api/additem', newItem)
+            .then(response => {
+                console.log('Item posted:', response.data);
+                navigate('/'); // Redirect after successful post
+            })
+            .catch(error => {
+                console.error('There was an error posting the item!', error);
+                setErrorMessage('Please fill in all the fields.')
+            });
+    };
 
-    
+
     return (
         <>
             <h1 className="title">Add an item</h1>

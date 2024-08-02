@@ -33,7 +33,7 @@ function HomePage() {
       <div className="home-page">
         <div className='header-items'>
           <h1 className='items-title'>Items</h1>
-          <button onClick={addItem}>Add item</button>
+          <button className='button' onClick={addItem}>Add item</button>
         </div>
         <div className="card-container">
           {items.map(item => (
