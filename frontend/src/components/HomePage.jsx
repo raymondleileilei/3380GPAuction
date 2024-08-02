@@ -59,4 +59,34 @@ const ItemCard = ({ item }) => {
   );
 };
 
+const UpdateBid = (props) => {
+  const [bid, setBid] = useState('');
+  const onBidChange = (e) => {
+    setBid(e.target.value)
+  };
+
+  const updateBid = (e) => {
+    e.preventDefault();
+
+    axios.post(`http://localhost:5001/api/updatebid/${props.id}`, bid)
+      .then(response => {
+        console.log('Item posted:', response.data);
+      })
+      .catch(error => {
+        console.error('There was an error updating the bid!', error);
+      });
+  };
+
+  return (
+    <form onSubmit={updateBid}>
+      <input type="text"
+        onChange={onBidChange}
+        name="addbid"
+        placeholder="Type your bid here..."
+      />
+      <button type="submit" id="submit">Add Bid</button>
+    </form>
+  );
+};
+
 export default HomePage
