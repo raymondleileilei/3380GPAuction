@@ -15,16 +15,16 @@ const Schema = mongoose.Schema;
 
 // Create a Schema object
 const itemSchema = new Schema({
-    itemid: { type: Number, unique: true, required: true },
+    // itemid: { type: Number, unique: true, required: true },
     itemName: { type: String, required: true },
     itemStartingPrice: { type: Number, required: true },
     itemDescription: { type: String, required: true },
     itemImg: { type: String },
     itemBidPrice: { type: Number },
-    itemStartTime: { type: Date, required: true },
-    itemEndTime: { type: Date, required: true },
-    SellerName: { type: String, required: true },
-    BuyerName: { type: String }
+    // itemStartTime: { type: Date, required: true },
+    // itemEndTime: { type: Date, required: true },
+    sellerName: { type: String, required: true },
+    buyerName: { type: String }
 });
 
 const Item = mongoose.model("Item", itemSchema);
@@ -73,17 +73,19 @@ router.route("/getitems")
     });
 
 //get item by itemid
-router.route("/getitem/:itemid")
+router.route("/getitem/:id")
     .get((req, res) => {
-        Item.findOne({ itemid: req.params.itemid })
+        const id = req.params.id;
+        Item.findById(id)
             .then((item) => res.json(item))
             .catch((err) => res.status(400).json("Error: " + err));
     });
 
 //get item image by itemid
-router.route("/image/:itemid")
+router.route("/image/:id")
 .get((req, res) => {
-    Item.findOne({ itemid: req.params.itemid })
+    const id = req.params.id;
+    Item.findById(id)
     .then((item) => 
     {
         const imgPath = path.join(__dirname, 'public/images', item.itemImg)
@@ -99,28 +101,28 @@ router.route("/image/:itemid")
 //post new item
 router.route("/additem")
     .post((req, res) => {
-        const itemid = req.body.itemid;
+        // const itemid = req.body.itemid;
         const itemName = req.body.itemName;
         const itemStartingPrice = req.body.itemStartingPrice;
         const itemDescription = req.body.itemDescription;
         const itemImg = req.body.itemImg;
         const itemBidPrice = req.body.itemStartingPrice;
-        const itemStartTime = req.body.itemStartTime;
-        const itemEndTime = req.body.itemEndTime;
-        const SellerName = req.body.SellerName;
-        const BuyerName = req.body.BuyerName;
+        // const itemStartTime = req.body.itemStartTime;
+        // const itemEndTime = req.body.itemEndTime;
+        const sellerName = req.body.sellerName;
+        // const buyerName = req.body.buyerName;
 
         const newItem = new Item({
-            itemid,
+            // itemid,
             itemName,
             itemStartingPrice,
             itemDescription,
             itemImg,
             itemBidPrice,
-            itemStartTime,
-            itemEndTime,
-            SellerName,
-            BuyerName
+            // itemStartTime,
+            // itemEndTime,
+            sellerName,
+            // buyerName
         });
 
         newItem
@@ -130,20 +132,21 @@ router.route("/additem")
     });
 
 //update item details by itemid
-router.route("/updateitem/:itemid")
+router.route("/updateitem/:id")
     .put((req, res) => {
-        Item.findOne({ itemid: req.params.itemid })
+        const id = req.params.id;
+        Item.findById(id)
             .then((item) => {
-                item.itemid = req.body.itemid;
+                // item.itemid = req.body.itemid;
                 item.itemName = req.body.itemName;
                 item.itemStartingPrice = req.body.itemStartingPrice;
                 item.itemDescription = req.body.itemDescription;
                 item.itemImg = req.body.itemImg;
                 item.itemBidPrice = req.body.itemBidPrice;
-                item.itemStartTime = req.body.itemStartTime;
-                item.itemEndTime = req.body.itemEndTime;
-                item.SellerName = req.body.SellerName;
-                item.BuyerName = req.body.BuyerName;
+                // item.itemStartTime = req.body.itemStartTime;
+                // item.itemEndTime = req.body.itemEndTime;
+                item.sellerName = req.body.sellerName;
+                item.buyerName = req.body.buyerName;
                 item
                     .save()
                     .then(() => res.json("Item updated!"))
@@ -153,12 +156,13 @@ router.route("/updateitem/:itemid")
     });
 
 //Update bid
-router.route("/updatebid/:itemid")
+router.route("/updatebid/:id")
     .put((req, res) => {
-        Item.findOne({ itemid: req.params.itemid })
+        const id = req.params.id;
+        Item.findById(id)
             .then((item) => {
                 item.itemBidPrice = req.body.itemBidPrice;
-                item.BuyerName = req.body.BuyerName;
+                item.buyerName = req.body.buyerName;
                 item
                     .save()
                     .then(() => res.json("Bid updated!"))
@@ -168,9 +172,10 @@ router.route("/updatebid/:itemid")
     });
 
 //Delete item by itemid
-router.route("/item/:itemid")
+router.route("/item/:id")
     .delete((req, res) => {
-        Item.findOneAndDelete({ itemid: req.params.itemid })
+        const id = req.params.id;
+        Item.findByIdAndDelete({ itemid: req.params.itemid })
             .then(() => res.json("Item deleted."))
             .catch((err) => res.status(400).json("Error: " + err));
     });

@@ -66,3 +66,34 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+.itemForm{
+  max-width: 800px;
+  margin-bottom: 20px;
+  padding: 30px 50px;
+  border-radius: 8px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+}
+
+.itemField{
+  /* margin: 10 auto; */
+  margin-right: 10px;
+  padding: 10px;
+  text-align: left;
+}
+
+input{
+  float:right;
+  margin-left: 20px;
+}
+
+.errorMessage{
+  color:red;
+  margin-bottom:10px;
+  display: none;
+}
+
+.errorMessage.show {
+  display: block;
+}

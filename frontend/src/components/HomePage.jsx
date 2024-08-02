@@ -37,7 +37,7 @@ function HomePage() {
         </div>
         <div className="card-container">
           {items.map(item => (
-            <ItemCard key={item.itemid} item={item} />
+            <ItemCard key={item._id} item={item} />
           ))}
         </div>
       </div>
@@ -49,12 +49,12 @@ function HomePage() {
 const ItemCard = ({ item }) => {
   return (
     <div className="card">
-      <img src={`/api/image/${item.itemid}`} alt={item.itemName} />
+      <img src={`/api/image/${item._id}`} alt={item.itemName} />
       <h2>{item.itemName}</h2>
       <p>{item.itemDescription}</p>
       <p>Starting Price: ${item.itemStartingPrice}</p>
       <p>Current Bid: ${item.itemBidPrice || 'None'}</p>
-      <p>Seller: {item.SellerName}</p>
+      <p>Seller: {item.sellerName}</p>
     </div>
   );
 };
