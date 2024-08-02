@@ -175,7 +175,7 @@ router.route("/updatebid/:id")
 router.route("/item/:id")
     .delete((req, res) => {
         const id = req.params.id;
-        Item.findByIdAndDelete({ itemid: req.params.itemid })
+        Item.findByIdAndDelete(id)
             .then(() => res.json("Item deleted."))
             .catch((err) => res.status(400).json("Error: " + err));
     });
