@@ -101,16 +101,17 @@ router.route("/image/:id")
 //post new item
 router.route("/additem")
     .post((req, res) => {
+        const defaultBidPrice = 0;
         // const itemid = req.body.itemid;
         const itemName = req.body.itemName;
         const itemStartingPrice = req.body.itemStartingPrice;
         const itemDescription = req.body.itemDescription;
         const itemImg = req.body.itemImg;
-        const itemBidPrice = req.body.itemStartingPrice;
+        const itemBidPrice = defaultBidPrice;
         // const itemStartTime = req.body.itemStartTime;
         // const itemEndTime = req.body.itemEndTime;
         const sellerName = req.body.sellerName;
-        // const buyerName = req.body.buyerName;
+        const buyerName = "None";
 
         const newItem = new Item({
             // itemid,
@@ -122,7 +123,7 @@ router.route("/additem")
             // itemStartTime,
             // itemEndTime,
             sellerName,
-            // buyerName
+            buyerName
         });
 
         newItem

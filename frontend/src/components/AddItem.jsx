@@ -15,13 +15,12 @@ function AddItem() {
 
     const postItem = (e) => {
         e.preventDefault();
-
         const newItem = {
             itemName,
             itemDescription,
             itemStartingPrice,
             sellerName,
-            itemImg: "noimg.jpg"
+            itemImg: "noimg.jpg",
         };
         axios.post('http://localhost:5001/api/additem', newItem)
             .then(response => {

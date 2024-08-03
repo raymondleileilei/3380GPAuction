@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 import Header from './Header'
 import '../css/HomePage.css'
@@ -15,6 +16,14 @@ function HomePage() {
     navigate('/addItem');
   }
 
+  const updateItemBid = (id, newBidPrice, buyerName) => {
+    setItems(items.map(item =>
+      item._id === id
+        ? { ...item, itemBidPrice: newBidPrice, buyerName: buyerName }
+        : item
+    ));
+  };
+
   useEffect(() => {
     // Fetch items from backend API using axios
     axios.get('/api/getitems')
@@ -27,6 +36,8 @@ function HomePage() {
       });
   }, []);
 
+  
+
   return (
     <>
       <Header />
@@ -37,7 +48,7 @@ function HomePage() {
         </div>
         <div className="card-container">
           {items.map(item => (
-            <ItemCard key={item._id} item={item} />
+            <ItemCard key={item._id} item={item} updateItemBid={updateItemBid}/>
           ))}
         </div>
       </div>
@@ -46,46 +57,98 @@ function HomePage() {
   )
 }
 
-const ItemCard = ({ item }) => {
+const ItemCard = ({ item,updateItemBid }) => {
   return (
     <div className="card">
       <img src={`/api/image/${item._id}`} alt={item.itemName} />
       <h2>{item.itemName}</h2>
       <p>{item.itemDescription}</p>
       <p>Starting Price: ${item.itemStartingPrice}</p>
-      <p>Current Bid: ${item.itemBidPrice || 'None'}</p>
+      <p>Current Bid: ${item.itemBidPrice}</p>
       <p>Seller: {item.sellerName}</p>
+      <p>Current Buyer: {item.buyerName}</p>
+      <UpdateBid item={item} updateItemBid={updateItemBid}/>
     </div>
   );
 };
 
-const UpdateBid = (props) => {
+const UpdateBid = ({item, updateItemBid}) => {
   const [bid, setBid] = useState('');
+  const [buyerName, setBuyerName] = useState('');
+  
   const onBidChange = (e) => {
     setBid(e.target.value)
   };
 
+  const onNameChange = (e) => {
+    setBuyerName(e.target.value)
+  };
+
   const updateBid = (e) => {
     e.preventDefault();
-
-    axios.post(`http://localhost:5001/api/updatebid/${props.id}`, bid)
+    if((item.itemBidPrice==0&&bid>=item.itemStartingPrice && buyerName)||(item.itemBidPrice!=0&&bid>0 && buyerName)){
+    const newBid = {
+      itemBidPrice: Number(item.itemBidPrice)+Number(bid),
+      buyerName: buyerName
+  };
+    axios.put(`http://localhost:5001/api/updatebid/${item._id}`, newBid)
       .then(response => {
-        console.log('Item posted:', response.data);
+        console.log('Bid updated:', response.data);
+        Swal.fire({
+          title: 'Success!',
+          text: 'Bid success',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          background: 'rgba(33,53,71,0)',
+          confirmButtonColor: '#1a1a1a',
+          cancelButtonColor: '#1a1a1a',
+        });
+        updateItemBid(item._id, newBid.itemBidPrice, newBid.buyerName);
       })
       .catch(error => {
         console.error('There was an error updating the bid!', error);
-      });
+      });}
+      else{
+        if(item.itemBidPrice!=0||!bid||!buyerName){
+        Swal.fire({
+          title: 'Bid Unsuccess!',
+          text: 'Please fill in your name and bid amount',
+          icon: 'warning',
+          confirmButtonText: 'Retry',
+          background: 'rgba(33,53,71,0)',
+          confirmButtonColor: '#1a1a1a',
+          cancelButtonColor: '#1a1a1a',
+        })}else{
+          Swal.fire({
+            title: 'Bid Unsuccess!',
+            text: 'Please enter amount more than / same as starting price',
+            icon: 'warning',
+            confirmButtonText: 'Retry',
+            background: 'rgba(33,53,71,0)',
+            confirmButtonColor: '#1a1a1a',
+            cancelButtonColor: '#1a1a1a',
+          })
+        }
+        ;
+      }
   };
 
   return (
+    <div>
     <form onSubmit={updateBid}>
       <input type="text"
+      onChange={onNameChange}
+        name="buyerName"
+        placeholder="Type your name"
+      />
+      <input type="number"
         onChange={onBidChange}
         name="addbid"
-        placeholder="Type your bid here..."
+        placeholder="Type your bid"
       />
-      <button type="submit" id="submit">Add Bid</button>
+      <button className="biddingBtn" type="submit" id="submit">Add Bid</button>
     </form>
+    </div>
   );
 };
 
