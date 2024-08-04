@@ -21,10 +21,10 @@ const itemSchema = new Schema({
     itemDescription: { type: String, required: true },
     itemImg: { type: String },
     itemBidPrice: { type: Number },
-    // itemStartTime: { type: Date, required: true },
-    // itemEndTime: { type: Date, required: true },
     sellerName: { type: String, required: true },
-    buyerName: { type: String }
+    buyerName: { type: String },
+    startTime: { type: Date, default: Date.now },
+    endTime: { type: Date},
 });
 
 const Item = mongoose.model("Item", itemSchema);
@@ -39,10 +39,29 @@ mongoose.connect('mongodb://localhost:27017/3380itemdb')
                     // No items found, insert data from data.json
                     const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
                     console.log('Items successfully inserted');
-                    return Item.insertMany(data);
+
+                    const now = new Date();
+                    const endTime = new Date(now.getTime() + 48 * 60 * 60 * 1000); // 48 hours later
+                    const itemsWithTime = data.map(item => ({
+                        ...item,
+                        startTime: now,
+                        endTime: endTime
+                    }));
+
+                    return Item.insertMany(itemsWithTime);
                 } else {
                     console.log('Items already exist in the database, skipping insertion.');
-                    return Promise.resolve(); // Return a resolved promise to continue
+                    return Item.find({}).then(items => {
+                        const now = new Date();
+                        return Promise.all(items.map(item => {
+                            if (!item.startTime || !item.endTime) {
+                                const endTime = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+                                item.startTime = now;
+                                item.endTime = endTime;
+                                return item.save().then(() => console.log(`Updated item ${item._id}`));
+                            }
+                        }));
+                    });
                 }
             })
             .then(() => {
@@ -108,22 +127,22 @@ router.route("/additem")
         const itemDescription = req.body.itemDescription;
         const itemImg = req.body.itemImg;
         const itemBidPrice = defaultBidPrice;
-        // const itemStartTime = req.body.itemStartTime;
-        // const itemEndTime = req.body.itemEndTime;
         const sellerName = req.body.sellerName;
         const buyerName = "None";
 
+        const startTime = new Date();
+        const endTime = new Date(startTime.getTime() + 48 * 60 * 60 * 1000);
+
         const newItem = new Item({
-            // itemid,
             itemName,
             itemStartingPrice,
             itemDescription,
             itemImg,
             itemBidPrice,
-            // itemStartTime,
-            // itemEndTime,
             sellerName,
-            buyerName
+            buyerName,
+            startTime,
+            endTime
         });
 
         newItem

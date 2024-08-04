@@ -9,6 +9,7 @@ import '../css/HomePage.css'
 function HomePage() {
 
   const [items, setItems] = useState([]);
+  const [timers, setTimers] = useState({});
   const navigate = useNavigate();
 
   const addItem = (e) => {
@@ -30,12 +31,44 @@ function HomePage() {
       .then(response => {
         console.log('Fetched items:', response.data);
         setItems(response.data);
+        
+        // Initialize timers
+        const initialTimers = response.data.reduce((acc, item) => {
+          acc[item._id] = new Date(item.endTime) - new Date();
+          return acc;
+        }, {});
+        setTimers(initialTimers);
       })
       .catch(error => {
         console.error('Error fetching items:', error);
       });
+
+    // Update countdown every second
+    const timer = setInterval(() => {
+      setTimers(prevTimers => {
+        const updatedTimers = { ...prevTimers };
+        Object.keys(updatedTimers).forEach(id => {
+          if (updatedTimers[id] > 0) {
+            updatedTimers[id] -= 1000; // Decrement by 1 second
+          }
+        });
+        return updatedTimers;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer); // Cleanup on component unmount
   }, []);
 
+  const formatTime = (milliseconds) => {
+    if (milliseconds <= 0) return '00h 00m 00s';
+
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+  };
   
 
   return (
@@ -48,7 +81,7 @@ function HomePage() {
         </div>
         <div className="card-container">
           {items.map(item => (
-            <ItemCard key={item._id} item={item} updateItemBid={updateItemBid}/>
+            <ItemCard key={item._id} item={item} updateItemBid={updateItemBid} remainingTime={timers[item._id] || 0}/>
           ))}
         </div>
       </div>
@@ -57,7 +90,7 @@ function HomePage() {
   )
 }
 
-const ItemCard = ({ item,updateItemBid }) => {
+const ItemCard = ({ item,updateItemBid, remainingTime }) => {
   return (
     <div className="card">
       <img src={`/api/image/${item._id}`} alt={item.itemName} />
@@ -67,6 +100,7 @@ const ItemCard = ({ item,updateItemBid }) => {
       <p>Current Bid: ${item.itemBidPrice}</p>
       <p>Seller: {item.sellerName}</p>
       <p>Current Buyer: {item.buyerName}</p>
+      <p>Time Remaining: {formatTime(remainingTime)}</p>
       <UpdateBid item={item} updateItemBid={updateItemBid}/>
     </div>
   );
@@ -150,6 +184,17 @@ const UpdateBid = ({item, updateItemBid}) => {
     </form>
     </div>
   );
+};
+
+const formatTime = (milliseconds) => {
+  if (milliseconds <= 0) return '00h 00m 00s';
+
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
 };
 
 export default HomePage
