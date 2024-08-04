@@ -83,6 +83,17 @@ const router = express.Router();
 
 app.use('/api', router);
 
+router.get('/searchitems', (req, res) => {
+    const keyword = req.query.keyword || '';
+    const regex = new RegExp(keyword, 'i'); // Case-insensitive search
+  
+    Item.find({
+        itemName: { $regex: regex }
+    })
+    .then(items => res.json(items))
+    .catch(err => res.status(400).json("Error: " + err));
+});
+
 //get all item
 router.route("/getitems")
     .get((req, res) => {

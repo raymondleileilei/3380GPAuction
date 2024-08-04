@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import debounce from 'lodash/debounce';
 
 import Header from './Header'
 import '../css/HomePage.css'
@@ -10,6 +11,7 @@ function HomePage() {
 
   const [items, setItems] = useState([]);
   const [timers, setTimers] = useState({});
+  const [searchKeyword, setSearchKeyword] = useState('');
   const navigate = useNavigate();
 
   const addItem = (e) => {
@@ -59,24 +61,65 @@ function HomePage() {
     return () => clearInterval(timer); // Cleanup on component unmount
   }, []);
 
-  const formatTime = (milliseconds) => {
-    if (milliseconds <= 0) return '00h 00m 00s';
+  // const handleSearch = () => {
+  //   if (searchKeyword.trim() === '') {
+  //     // If the search keyword is empty, fetch all items
+  //     axios.get('/api/getitems')
+  //       .then(response => {
+  //         setItems(response.data); // Update the state with all items
+  //       })
+  //       .catch(error => {
+  //         console.error('Error fetching items:', error);
+  //       });
+  //   } else {
+  //     // Otherwise, perform the search
+  //     axios.get(`/api/searchitems?keyword=${searchKeyword}`)
+  //       .then(response => {
+  //         setItems(response.data); // Update the state with the search results
+  //       })
+  //       .catch(error => {
+  //         console.error('Error searching items:', error);
+  //       });
+  //   }
+  // };
 
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
-  };
   
+  const searchItems = useCallback(
+    debounce((keyword) => {
+      if (keyword.trim() === '') {
+        axios.get('/api/getitems')
+          .then(response => {
+            setItems(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching items:', error);
+          });
+      } else {
+        axios.get(`/api/searchitems?keyword=${keyword}`)
+          .then(response => {
+            setItems(response.data);
+          })
+          .catch(error => {
+            console.error('Error searching items:', error);
+          });
+      }
+    }, 300), // Adjust the debounce delay as needed
+    []
+  );
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchKeyword(value);
+    searchItems(value);
+  };
 
   return (
     <>
       <Header />
       <div className="home-page">
-        <div className='header-items'>
+        <div className='header-items'> 
           <h1 className='items-title'>Items</h1>
+          <input type='text' placeholder='Search for an item...' value={searchKeyword} onChange={handleSearchInputChange} className='search-bar'/>
           <button className='button' onClick={addItem}>Add item</button>
         </div>
         <div className="card-container">
@@ -90,7 +133,7 @@ function HomePage() {
   )
 }
 
-const ItemCard = ({ item,updateItemBid, remainingTime }) => {
+const ItemCard = ({ item, updateItemBid, remainingTime }) => {
   return (
     <div className="card">
       <img src={`/api/image/${item._id}`} alt={item.itemName} />
