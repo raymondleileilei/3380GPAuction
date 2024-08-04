@@ -10,28 +10,58 @@ function AddItem() {
     const [itemStartingPrice, setItemStartingPrice] = useState('');
     const [sellerName, setSellerName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [itemImg, setItemImg] = useState(null);
 
     const navigate = useNavigate();
 
-    const postItem = (e) => {
+    const postItem = async (e) => {
         e.preventDefault();
-        const newItem = {
-            itemName,
-            itemDescription,
-            itemStartingPrice,
-            sellerName,
-            itemImg: "noimg.jpg",
-        };
-        axios.post('http://localhost:5001/api/additem', newItem)
-            .then(response => {
-                console.log('Item posted:', response.data);
-                navigate('/'); // Redirect after successful post
-            })
-            .catch(error => {
-                console.error('There was an error posting the item!', error);
-                setErrorMessage('Please fill in all the fields.')
+
+        if (!itemName || !itemDescription || !itemStartingPrice || !sellerName) {
+            setErrorMessage('Please fill in all the fields.');
+            return;
+          }
+      
+          const formData = new FormData();
+          formData.append('itemName', itemName);
+          formData.append('itemDescription', itemDescription);
+          formData.append('itemStartingPrice', itemStartingPrice);
+          formData.append('sellerName', sellerName);
+          if (itemImg) {
+            formData.append('itemImg', itemImg); // Append file
+          }
+      
+          try {
+            const response = await axios.post('http://localhost:5001/api/additem', formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
             });
-    };
+            console.log('Item posted:', response.data);
+            navigate('/'); // Redirect after successful post
+          } catch (error) {
+            console.error('There was an error posting the item!', error);
+            setErrorMessage('There was an error posting the item.');
+          }
+        };
+
+        // const newItem = {
+        //     itemName,
+        //     itemDescription,
+        //     itemStartingPrice,
+        //     sellerName,
+        //     itemImg: "noimg.jpg",
+        // };
+        // axios.post('http://localhost:5001/api/additem', newItem)
+        //     .then(response => {
+        //         console.log('Item posted:', response.data);
+        //         navigate('/'); // Redirect after successful post
+        //     })
+        //     .catch(error => {
+        //         console.error('There was an error posting the item!', error);
+        //         setErrorMessage('Please fill in all the fields.')
+        //     });
+    
 
 
     return (
@@ -42,6 +72,8 @@ function AddItem() {
                 <div className="itemField">Item Description: <input id="itemDescription" name="itemDescription" type="text" value={itemDescription} onChange={(e) => setItemDescription(e.target.value)}></input></div>
                 <div className="itemField">Item Starting Price: <input id="itemStartingPrice" name="itemStartingPrice" type="number" value={itemStartingPrice} onChange={(e) => setItemStartingPrice(e.target.value)}></input></div>
                 <div className="itemField">Your Name: <input id="sellerName" name="sellerName" type="text" value={sellerName} onChange={(e) => setSellerName(e.target.value)}></input></div>
+                <div className="itemField">Image: <input type="file" onChange={(e) => setItemImg(e.target.files[0])} />
+        </div>
             </div>
             {errorMessage && <div className="errorMessage show">{errorMessage}</div>}
             <div>

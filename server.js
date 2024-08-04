@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const fs = require('fs');
+const multer = require('multer');
 const path = require('path'); 
 
 const app = express();
@@ -9,6 +10,17 @@ const port = process.env.PORT || 5001;
 
 app.use(cors());
 app.use(express.json());
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/images'); // Directory to save uploaded files
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname)); // Unique file name
+    }
+  });
+  
+  const upload = multer({ storage });
 
 // define Schema Class
 const Schema = mongoose.Schema;
@@ -130,16 +142,16 @@ router.route("/image/:id")
 
 //post new item
 router.route("/additem")
-    .post((req, res) => {
+    .post(upload.single('itemImg'), (req, res) => {
         const defaultBidPrice = 0;
         // const itemid = req.body.itemid;
         const itemName = req.body.itemName;
         const itemStartingPrice = req.body.itemStartingPrice;
         const itemDescription = req.body.itemDescription;
-        const itemImg = req.body.itemImg;
         const itemBidPrice = defaultBidPrice;
         const sellerName = req.body.sellerName;
         const buyerName = "None";
+        const itemImg = req.file ? req.file.filename : 'noimg.jpg';
 
         const startTime = new Date();
         const endTime = new Date(startTime.getTime() + 48 * 60 * 60 * 1000);
@@ -153,7 +165,8 @@ router.route("/additem")
             sellerName,
             buyerName,
             startTime,
-            endTime
+            endTime,
+            itemImg
         });
 
         newItem
