@@ -8,7 +8,12 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5001;
 
-app.use(cors());
+app.use(cors(
+    {
+        origin: ["https://3380g5project.vercel.app"],
+        methods: ["POST", "GET"],
+        credentials: true
+));
 app.use(express.json());
 
 const storage = multer.diskStorage({
@@ -41,7 +46,7 @@ const itemSchema = new Schema({
 
 const Item = mongoose.model("Item", itemSchema);
 
-mongoose.connect('mongodb://localhost:27017/3380itemdb')
+mongoose.connect('mongodb+srv://goyala4:<MalinaC3bsohFM>@cluster0.dmzcaex.mongodb.net/3380G5Project?retryWrites=true&w=majority&appName=Cluster0')
     .then(() => {
         console.log('Connected to MongoDB');
         //Check and create dummy items
