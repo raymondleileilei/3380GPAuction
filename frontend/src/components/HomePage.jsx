@@ -9,9 +9,7 @@ import '../css/HomePage.css'
 
 function HomePage() {
 
-  const api = axios.create({
-    baseURL: 'https://three380gpauction-oz81.onrender.com', // Your backend URL
-  });
+  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://three380gpauction-oz81.onrender.com';
 
   const [items, setItems] = useState([]);
   const [timers, setTimers] = useState({});
@@ -33,7 +31,7 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch items from backend API using axios
-    api.get('/getitems')
+    axios.get(`${backendUrl}/api/getitems`)
       .then(response => {
         console.log('Fetched items:', response.data);
         setItems(response.data);
@@ -91,7 +89,7 @@ function HomePage() {
   const searchItems = useCallback(
     debounce((keyword) => {
       if (keyword.trim() === '') {
-        api.get('/api/getitems')
+        axios.get(`${backendUrl}/api/getitems`)
           .then(response => {
             setItems(response.data);
           })
@@ -99,7 +97,7 @@ function HomePage() {
             console.error('Error fetching items:', error);
           });
       } else {
-        api.get(`/api/searchitems?keyword=${keyword}`)
+        axios.get(`${backendUrl}/api/searchitems?keyword=${keyword}`)
           .then(response => {
             setItems(response.data);
           })
@@ -140,7 +138,7 @@ function HomePage() {
 const ItemCard = ({ item, updateItemBid, remainingTime }) => {
   return (
     <div className="card">
-      <img src={`/api/image/${item._id}`} alt={item.itemName} />
+      <img src={`${backendUrl}/api/image/${item._id}`} alt={item.itemName} />
       <h2>{item.itemName}</h2>
       <p>{item.itemDescription}</p>
       <p>Starting Price: ${item.itemStartingPrice}</p>
@@ -172,7 +170,7 @@ const UpdateBid = ({item, updateItemBid}) => {
       itemBidPrice: Number(item.itemBidPrice)+Number(bid),
       buyerName: buyerName
   };
-    axios.put(`http://localhost:5001/api/updatebid/${item._id}`, newBid)
+    axios.put(`${backendUrl}/api/updatebid/${item._id}`, newBid)
       .then(response => {
         console.log('Bid updated:', response.data);
         Swal.fire({
