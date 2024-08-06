@@ -13,7 +13,6 @@ function HomePage() {
   const [timers, setTimers] = useState({});
   const [searchKeyword, setSearchKeyword] = useState('');
   const navigate = useNavigate();
-  const apiUrl = "https://three380g5project.onrender.com";
 
   const addItem = (e) => {
     e.preventDefault();
@@ -30,7 +29,7 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch items from backend API using axios
-    axios.get(`${apiUrl}/api/getitems`)
+    axios.get("https://three380g5project.onrender.com/api/getitems")
       .then(response => {
         console.log('Fetched items:', response.data);
         setItems(response.data);
@@ -88,7 +87,7 @@ function HomePage() {
   const searchItems = useCallback(
     debounce((keyword) => {
       if (keyword.trim() === '') {
-        axios.get(`${apiUrl}/api/getitems`)
+        axios.get("https://three380g5project.onrender.com/api/getitems")
           .then(response => {
             setItems(response.data);
           })
@@ -96,7 +95,7 @@ function HomePage() {
             console.error('Error fetching items:', error);
           });
       } else {
-        axios.get(`${apiUrl}/api/searchitems?keyword=${keyword}`)
+        axios.get("https://three380g5project.onrender.com/api/searchitems?keyword=${keyword}")
           .then(response => {
             setItems(response.data);
           })
@@ -137,7 +136,7 @@ function HomePage() {
 const ItemCard = ({ item, updateItemBid, remainingTime }) => {
   return (
     <div className="card">
-      <img src={`${apiUrl}/api/image/${item._id}`} alt={item.itemName} />
+      <img src={`https://three380g5project.onrender.com/api/image/${item._id}`} alt={item.itemName} />
       <h2>{item.itemName}</h2>
       <p>{item.itemDescription}</p>
       <p>Starting Price: ${item.itemStartingPrice}</p>
@@ -169,7 +168,7 @@ const UpdateBid = ({item, updateItemBid}) => {
       itemBidPrice: Number(item.itemBidPrice)+Number(bid),
       buyerName: buyerName
   };
-    axios.put(`${apiUrl}/api/api/updatebid/${item._id}`, newBid)
+    axios.put(`https://three380g5project.onrender.com/api/updatebid/${item._id}`, newBid)
       .then(response => {
         console.log('Bid updated:', response.data);
         Swal.fire({
