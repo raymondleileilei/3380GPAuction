@@ -32,7 +32,7 @@ function AddItem() {
           }
       
           try {
-            const response = await axios.post('http://localhost:5001/api/additem', formData, {
+            const response = await axios.post('https://three380g5project.onrender.com/api/additem', formData, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
