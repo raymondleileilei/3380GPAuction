@@ -8,12 +8,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 5001;
 
-app.use(cors(
-    {
-        origin: ["https://3380g5project.vercel.app"],
-        methods: ["POST", "GET"],
-        credentials: true
-));
+app.use(cors());
 app.use(express.json());
 
 const storage = multer.diskStorage({
