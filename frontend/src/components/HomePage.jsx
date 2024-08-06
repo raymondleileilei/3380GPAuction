@@ -9,6 +9,10 @@ import '../css/HomePage.css'
 
 function HomePage() {
 
+  const api = axios.create({
+    baseURL: 'https://three380gpauction-oz81.onrender.com', // Your backend URL
+  });
+
   const [items, setItems] = useState([]);
   const [timers, setTimers] = useState({});
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -29,7 +33,7 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch items from backend API using axios
-    axios.get('/api/getitems')
+    api.get('/api/getitems')
       .then(response => {
         console.log('Fetched items:', response.data);
         setItems(response.data);
@@ -87,7 +91,7 @@ function HomePage() {
   const searchItems = useCallback(
     debounce((keyword) => {
       if (keyword.trim() === '') {
-        axios.get('/api/getitems')
+        api.get('/api/getitems')
           .then(response => {
             setItems(response.data);
           })
@@ -95,7 +99,7 @@ function HomePage() {
             console.error('Error fetching items:', error);
           });
       } else {
-        axios.get(`/api/searchitems?keyword=${keyword}`)
+        api.get(`/api/searchitems?keyword=${keyword}`)
           .then(response => {
             setItems(response.data);
           })
