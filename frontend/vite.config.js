@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:5001', // Replace with your backend server URL
+        target: 'https://three380g5project.onrender.com', // Replace with your backend server URL
         changeOrigin: true,
       },
     },
