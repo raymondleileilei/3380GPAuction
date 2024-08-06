@@ -29,7 +29,7 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch items from backend API using axios
-    axios.get('/api/getitems')
+    axios.get('https://three380g5project.onrender.com/api/getitems')
       .then(response => {
         console.log('Fetched items:', response.data);
         setItems(response.data);
