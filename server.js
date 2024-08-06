@@ -41,7 +41,7 @@ const itemSchema = new Schema({
 
 const Item = mongoose.model("Item", itemSchema);
 
-mongoose.connect('mongodb+srv://goyala4:<MalinaC3bsohFM>@cluster0.dmzcaex.mongodb.net/3380G5Project?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('mongodb+srv://goyala4:MalinaC3bsohFM@cluster0.dmzcaex.mongodb.net/3380G5Project?retryWrites=true&w=majority&appName=Cluster0')
     .then(() => {
         console.log('Connected to MongoDB');
         //Check and create dummy items
