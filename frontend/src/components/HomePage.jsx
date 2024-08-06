@@ -33,7 +33,7 @@ function HomePage() {
 
   useEffect(() => {
     // Fetch items from backend API using axios
-    api.get('/api/getitems')
+    api.get('/getitems')
       .then(response => {
         console.log('Fetched items:', response.data);
         setItems(response.data);
