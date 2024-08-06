@@ -95,7 +95,7 @@ function HomePage() {
             console.error('Error fetching items:', error);
           });
       } else {
-        axios.get("https://three380g5project.onrender.com/api/searchitems?keyword=${keyword}")
+        axios.get(`https://three380g5project.onrender.com/api/searchitems?keyword=${keyword}`)
           .then(response => {
             setItems(response.data);
           })
